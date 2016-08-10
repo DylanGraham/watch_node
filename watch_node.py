@@ -3,11 +3,13 @@
 Usage: watch_node.py [comp000]
 """
 
+import email_details
 import os
 import re
+import smtplib
 import subprocess
 import sys
-
+from email.mime.text import MIMEText
 
 watch_node_dir = os.path.expanduser("~") + '/.watchnode'
 watch_node_file = watch_node_dir + '/watchnode'
@@ -43,12 +45,24 @@ def check_nodes():
                 p1 = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"], shell=True,
                                       stdout=subprocess.PIPE)
                 if p1.communicate()[0].strip() == 'Idle':
-                    # TODO: send email
+                    send_email(node)
                     nodelist.remove(node)
 
         with open(watch_node_file, 'w') as fp:
             for node in nodelist:
                 fp.write(node + " ")
+
+
+def send_email(node):
+    sender = email_details.from_address
+    recipient = email_details.to_address
+    msg = MIMEText(node + ' is Idle')
+    msg['Subject'] = 'Watched node ' + node + ' is now free'
+    msg['From'] = sender
+    msg['To'] = recipient
+    s = smtplib.SMTP()
+    s.sendmail(sender, recipient, msg.as_string())
+    s.quit()
 
 
 if __name__ == '__main__':
