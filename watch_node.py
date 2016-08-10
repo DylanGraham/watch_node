@@ -42,7 +42,9 @@ def check_nodes():
             for node in nodelist:
                 p1 = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"], shell=True,
                                       stdout=subprocess.PIPE)
-                print(p1.communicate()[0])
+                if p1.communicate()[0].strip() == 'Idle':
+                    # TODO: send email
+                    pass
 
 if __name__ == '__main__':
     node_name = None
