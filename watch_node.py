@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 watch_node_dir = '~/.watchnode'
-watch_node_file = 'watchnode'
+watch_node_file = watch_node_dir + '/watchnode'
 
 
 def setup_env():
@@ -26,7 +26,7 @@ def check_arg(node):
 
 
 def watch_node(node):
-    with open(watch_node_dir + "/" + watch_node_file, 'a+') as fp:
+    with open(watch_node_file, 'a+') as fp:
         nodelist = fp.read().split()
         if node in nodelist:
             print("Node already watched")
@@ -35,11 +35,12 @@ def watch_node(node):
 
 
 def check_nodes():
-    with open(watch_node_dir + "/" + watch_node_file, 'r') as fp:
-        nodelist = fp.read().split()
-        for node in nodelist:
-            mdiag = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"])
-            print(node + " " + mdiag)
+    if os.path.isfile(watch_node_file):
+        with open(watch_node_file, 'r') as fp:
+            nodelist = fp.read().split()
+            for node in nodelist:
+                mdiag = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"])
+                print(node + " " + mdiag)
 
 
 if __name__ == '__main__':
