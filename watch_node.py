@@ -5,6 +5,7 @@ Usage: watch_node.py <comp000>
 
 import os
 import re
+import subprocess
 import sys
 
 watch_node_dir = '~/.watchnode'
@@ -25,24 +26,35 @@ def check_arg(node):
 
 
 def watch_node(node):
-    with open(watch_node_dir + "/" + watch_node_file, 'a') as fp:
-        fp.write(node + "\n")
+    with open(watch_node_dir + "/" + watch_node_file, 'a+') as fp:
+        nodelist = fp.read().split()
+        if node in nodelist:
+            print("Node already watched")
+        else:
+            fp.write(node + " ")
 
 
 def check_nodes():
     with open(watch_node_dir + "/" + watch_node_file, 'r') as fp:
-        pass
+        nodelist = fp.read().split()
+        for node in nodelist:
+            mdiag = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"])
+            print(node + " " + mdiag)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    node_name = None
+    arg_length = len(sys.argv)
+    if arg_length > 2:
         print(__doc__)
         sys.exit(1)
+    elif arg_length == 2:
+        node_name = sys.argv[1]
 
     setup_env()
 
-    if sys.argv[1]:
-        check_arg(sys.argv[1])
-        watch_node(sys.argv[1])
+    if node_name:
+        check_arg(node_name)
+        watch_node(node_name)
     else:
         check_nodes()
