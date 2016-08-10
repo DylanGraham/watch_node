@@ -8,7 +8,8 @@ import re
 import subprocess
 import sys
 
-watch_node_dir = '~/.watchnode'
+
+watch_node_dir = os.path.expanduser("~") + '/.watchnode'
 watch_node_file = watch_node_dir + '/watchnode'
 
 
@@ -39,9 +40,9 @@ def check_nodes():
         with open(watch_node_file, 'r') as fp:
             nodelist = fp.read().split()
             for node in nodelist:
-                mdiag = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"])
-                print(node + " " + mdiag)
-
+                p1 = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"], shell=True,
+                                      stdout=subprocess.PIPE)
+                print(p1.communicate()[0])
 
 if __name__ == '__main__':
     node_name = None
