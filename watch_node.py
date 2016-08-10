@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 """
-Usage: watch_node.py <comp000>
+Usage: watch_node.py [comp000]
 """
 
 import os
@@ -44,7 +44,12 @@ def check_nodes():
                                       stdout=subprocess.PIPE)
                 if p1.communicate()[0].strip() == 'Idle':
                     # TODO: send email
-                    pass
+                    nodelist.remove(node)
+
+        with open(watch_node_file, 'w') as fp:
+            for node in nodelist:
+                fp.write(node + " ")
+
 
 if __name__ == '__main__':
     node_name = None
