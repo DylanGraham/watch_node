@@ -56,11 +56,12 @@ def check_nodes():
 def send_email(node):
     sender = email_details.from_address
     recipient = email_details.to_address
-    msg = MIMEText(node + ' is Idle')
-    msg['Subject'] = 'Watched node ' + node + ' is now free'
+    msg = MIMEText(node + ' is idle')
+    msg['Subject'] = 'watched node ' + node + ' is now free'
     msg['From'] = sender
     msg['To'] = recipient
     s = smtplib.SMTP()
+    s.connect(email_details.mailserver)
     s.sendmail(sender, recipient, msg.as_string())
     s.quit()
 
