@@ -42,9 +42,8 @@ def check_nodes():
         with open(watch_node_file, 'r') as fp:
             nodelist = fp.read().split()
             for node in nodelist:
-                p1 = subprocess.Popen(["mdiag -n | grep " + node + " | awk {'print $2'}"], shell=True,
-                                      stdout=subprocess.PIPE)
-                if p1.communicate()[0].strip() == 'Idle':
+                p1 = subprocess.Popen(["qstat | grep " + node], shell=True, stdout=subprocess.PIPE)
+                if p1.communicate()[0]:
                     send_email(node)
                     nodelist.remove(node)
 
