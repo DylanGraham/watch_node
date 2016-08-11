@@ -43,7 +43,7 @@ def check_nodes():
             nodelist = fp.read().split()
             for node in nodelist:
                 p1 = subprocess.Popen(["qstat -n | grep " + node], shell=True, stdout=subprocess.PIPE)
-                if p1.communicate()[0]:
+                if not p1.communicate()[0]:
                     send_email(node)
                     nodelist.remove(node)
 
