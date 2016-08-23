@@ -43,7 +43,7 @@ def check_nodes():
             nodelist = fp.read().split()
             still_watch = []
             for node in nodelist:
-                p1 = subprocess.Popen(["qstat -n | grep " + node], shell=True, stdout=subprocess.PIPE)
+                p1 = subprocess.Popen(["/usr/local/bin/qstat -n | grep " + node], shell=True, stdout=subprocess.PIPE)
                 if not p1.communicate()[0]:
                     send_email(node)
                 else:
