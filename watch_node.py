@@ -41,15 +41,17 @@ def check_nodes():
     if os.path.isfile(watch_node_file):
         with open(watch_node_file, 'r') as fp:
             nodelist = fp.read().split()
+            still_watch = []
             for node in nodelist:
                 p1 = subprocess.Popen(["qstat -n | grep " + node], shell=True, stdout=subprocess.PIPE)
                 if not p1.communicate()[0]:
                     send_email(node)
-                    nodelist.remove(node)
+                else:
+                    still_watch.append(node)
 
         with open(watch_node_file, 'w') as fp:
-            for node in nodelist:
-                fp.write(node + " ")
+            for node in still_watch:
+                fp.write(str(node) + " ")
 
 
 def send_email(node):
